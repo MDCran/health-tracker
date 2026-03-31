@@ -1,6 +1,12 @@
 import { ApiError } from '@/types/api';
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9147';
+function resolveApiBase() {
+  const raw = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9147';
+  if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
+  return `https://${raw}`;
+}
+
+export const API_BASE = resolveApiBase();
 
 type RequestOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
