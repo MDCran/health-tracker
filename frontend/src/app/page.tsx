@@ -146,6 +146,24 @@ function RotatingWord() {
   );
 }
 
+function BackendStatus({ status }: { status: 'checking' | 'offline' | 'online' }) {
+  if (status === 'online') return null;
+
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-yellow-500/20 bg-yellow-500/5 px-4 py-3 text-[13px] text-yellow-200">
+      <svg className="h-4 w-4 shrink-0 animate-spin text-yellow-400" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25" />
+        <path d="M12 2a10 10 0 019.95 9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      </svg>
+      <span>
+        {status === 'checking'
+          ? 'Connecting to server...'
+          : 'Server is waking up — this takes about 2 minutes on the free tier. Please wait...'}
+      </span>
+    </div>
+  );
+}
+
 export default function LoginPage() {
   const [isRegister, setIsRegister] = useState(false);
   const [username, setUsername] = useState('');
@@ -153,6 +171,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [backendStatus, setBackendStatus] = useState<'checking' | 'offline' | 'online'>('checking');
   const { setAuth, isAuthenticated } = useAuthStore();
   const router = useRouter();
 
@@ -163,6 +182,31 @@ export default function LoginPage() {
       router.push('/dashboard');
     }
   }, [router]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9147';
+
+    async function checkBackend() {
+      try {
+        const res = await fetch(`${API_BASE}/api/v1/auth/me`, {
+          method: 'GET',
+          signal: AbortSignal.timeout(5000),
+        });
+        // Any response (even 401) means the backend is up
+        if (!cancelled) setBackendStatus('online');
+      } catch {
+        if (!cancelled) {
+          setBackendStatus('offline');
+          // Retry every 10 seconds
+          setTimeout(checkBackend, 10000);
+        }
+      }
+    }
+
+    checkBackend();
+    return () => { cancelled = true; };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -306,6 +350,8 @@ export default function LoginPage() {
               className="space-y-4 opacity-0 animate-[fadeSlideUp_0.5s_ease_forwards]"
               style={{ animationDelay: '0.2s' }}
             >
+              <BackendStatus status={backendStatus} />
+
               {error && (
                 <div className="flex items-center gap-2 rounded-xl bg-danger/10 px-4 py-3 text-[13px] font-medium text-danger">
                   <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0 fill-current">
@@ -332,7 +378,7 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || backendStatus !== 'online'}
                 className="relative w-full overflow-hidden rounded-xl bg-primary px-4 py-3 text-[15px]
                            font-semibold text-white shadow-lg shadow-primary/20
                            transition-all duration-200
