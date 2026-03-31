@@ -15,7 +15,7 @@ spring:
       ddl-auto: validate
 
 cors:
-  allowed-origins: ${CORS_ALLOWED_ORIGINS:https://healthtracker.mdcran.com}
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:https://healthtracker.mdcran.com,https://*.onrender.com}
 
 google:
   redirect-uri: ${GOOGLE_REDIRECT_URI:https://api.healthtracker.mdcran.com/api/v1/integrations/google/callback}
