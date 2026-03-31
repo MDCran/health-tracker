@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
 CREATE TABLE exercise (
     id                  BIGSERIAL PRIMARY KEY,
     external_id         VARCHAR(200) UNIQUE,
