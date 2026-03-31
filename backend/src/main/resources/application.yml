@@ -1,0 +1,61 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/personal_health
+    username: health_user
+    password: ${DB_PASSWORD:health_dev_pass}
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+
+openai:
+  api-key: ${OPENAI_API_KEY:}
+  model: gpt-4o-mini
+  base-url: https://api.openai.com/v1
+
+jwt:
+  secret: ${JWT_SECRET:dev-secret-change-this-in-production-must-be-at-least-256-bits-long-for-hs256}
+  expiration-ms: 86400000
+
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+app:
+  upload-dir: ${UPLOAD_DIR:./uploads}
+
+encryption:
+  key: ${ENCRYPTION_KEY:}
+
+exercisedb:
+  api-key: ${EXERCISEDB_API_KEY:}
+  base-url: https://exercisedb.p.rapidapi.com
+
+musclewiki:
+  api-key: ${MUSCLEWIKI_API_KEY:}
+  base-url: https://api.musclewiki.com
+
+api-ninjas:
+  api-key: ${API_NINJAS_KEY:}
+  base-url: https://api.api-ninjas.com/v1
+
+google:
+  client-id: ${GOOGLE_CLIENT_ID:}
+  client-secret: ${GOOGLE_CLIENT_SECRET:}
+  redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:9147/api/v1/integrations/google/callback}
+
+server:
+  port: 9147
