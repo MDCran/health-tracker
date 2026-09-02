@@ -4,8 +4,6 @@
 
 Personal health tracking platform with a Next.js frontend and a Spring Boot backend.
 
-![Health Tracker architecture](docs/architecture.svg)
-
 ## App screenshots
 
 These screenshots show the running Health Tracker experience across its core tracking workflows.
