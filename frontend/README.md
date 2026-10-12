@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Health Tracker Frontend
 
-## Getting Started
+The Next.js client for [Health Tracker](../README.md), a personal health-tracking application with a separate Spring Boot API.
 
-First, run the development server:
+## Stack and code map
+
+Next.js 16, React 19, TypeScript, Tailwind CSS 4, TanStack Query, Zustand, Recharts, and React Aria Components. See [package.json](package.json) for exact versions.
+
+- [src/app](src/app): App Router pages and layouts for dashboard, workouts, nutrition, and other tracking views.
+- [src/components](src/components): Shared interface and navigation components.
+- [src/lib/api](src/lib/api): Typed feature API modules and the shared HTTP client.
+- [src/lib/stores](src/lib/stores): Authentication, theme, timer, and UI state.
+- [src/types](src/types): Shared TypeScript data models.
+
+## Run locally
+
+Requires Node.js 20.9 or newer and npm. Follow the [root setup guide](../README.md#local-development) to configure PostgreSQL and start the backend first.
+
+From this directory:
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [localhost:3000](http://localhost:3000). The [API client](src/lib/api/client.ts) defaults to `http://localhost:9147`. Set `NEXT_PUBLIC_API_URL` in an uncommitted `.env.local` to use a different development backend; do not place secrets in browser-exposed `NEXT_PUBLIC_` variables.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Use synthetic data when evaluating the interface. Optional backend integrations require their own server-side configuration.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Validation
 
-## Learn More
+```bash
+npm run lint
+npm run build
+# After a successful build:
+npm start
+```
 
-To learn more about Next.js, take a look at the following resources:
+There is no frontend test script in the current package. The repository's [CodeQL workflow](../.github/workflows/codeql.yml) covers JavaScript/TypeScript and Java; its [Security checks workflow](../.github/workflows/security-checks.yml) audits frontend npm dependencies. The audit is non-blocking, so check logs rather than interpreting a green badge as zero vulnerabilities. See the [root validation notes](../README.md#validation-and-security-checks) for coverage limits.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Framework credits and deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Originally bootstrapped with [create-next-app](https://nextjs.org/docs/app/api-reference/cli/create-next-app). The layout uses [next/font](https://nextjs.org/docs/app/getting-started/fonts) with [Geist](https://vercel.com/font).
 
-## Deploy on Vercel
+- [Next.js documentation](https://nextjs.org/docs)
+- [Learn Next.js](https://nextjs.org/learn)
+- [Next.js source](https://github.com/vercel/next.js)
+- [Next.js deployment guide](https://nextjs.org/docs/app/getting-started/deploying)
+- [Vercel](https://vercel.com/new)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deployment requires a reachable backend and matching API/CORS configuration. Follow the repository's [contribution and attribution guidance](../CONTRIBUTING.md).
